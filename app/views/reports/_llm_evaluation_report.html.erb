@@ -1,0 +1,60 @@
+<div class='reviewreport'>
+  <table id="myTable" class="table table-striped">
+    <thead>
+      <tr bgcolor='#CCCCCC'>
+        <th>Reviewer</th>
+        <th>Reviews done</th>
+        <th>Team reviewed</th>
+        <th>Score awarded</th>
+        <th>Avg Score</th>
+        <th>Metrics</th>
+        <th>Assign grade and comment</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @llm_response_data[:reviewers].each_with_index do |reviewer, index| %>
+        <tr>
+          <td>
+            <%= "#{index + 1}. #{reviewer[:reviewer_name]} (#{reviewer[:unity_id]})" %>
+          </td>
+          <td>
+            <%= reviewer[:reviews_done] %>
+          </td>
+          <td>
+            <% reviewer[:reviewed_teams].each do |team| %>
+              <div>
+                <%= team[:reviewed] ? "✓ #{team[:team_name]}" : team[:team_name] %>
+              </div>
+            <% end %>
+          </td>
+          <td>
+            <% reviewer[:reviewed_teams].each do |team| %>
+              <div>
+                <%= team[:score_awarded] || "N/A" %>
+              </div>
+            <% end %>
+          </td>
+          <td>
+            <% reviewer[:reviewed_teams].each do |team| %>
+              <div>
+                <%= team[:average_score] || "N/A" %>
+              </div>
+            <% end %>
+          </td>
+          <td>
+            <%= reviewer[:metrics] %>
+          </td>
+          <td>
+            <%= form_with url: save_llm_grade_and_comment_for_reviewer_review_mapping_index_path, method: :post do |form| %>
+              <%= form.hidden_field :participant_id, value: reviewer[:reviewer_id] %>
+              <%= form.hidden_field :assignment_id, value: @assignment.id %>
+              <%= form.number_field :grade_for_reviewer, value: reviewer[:review_grade][:grade_for_reviewer], min: 0, max: 100 %><br/>
+              <%= form.text_area :comment_for_reviewer, value: reviewer[:review_grade][:comment_for_reviewer] %><br/>
+              <%= form.submit "Overwrite", class: "btn btn-warning" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

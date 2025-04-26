@@ -356,6 +356,8 @@ Expertiza::Application.routes.draw do
       get :run_get_notification
       post :edit
       post :delete
+      
+
     end
   end
 
@@ -391,6 +393,7 @@ Expertiza::Application.routes.draw do
       post :delete_metareviewer
       post :delete_all_metareviewers
       post :delete_outstanding_reviewers
+      post :save_llm_grade_and_comment_for_reviewer
     end
   end
 
@@ -642,7 +645,7 @@ Expertiza::Application.routes.draw do
       get :redirect_to_assignment
       get :new
     end
-  end
+  end  
 
   resources :conference
   root to: 'content_pages#view', page_name: 'home'
